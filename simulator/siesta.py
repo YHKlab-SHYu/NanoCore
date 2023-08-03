@@ -1545,3 +1545,4 @@ def get_eos(pattern='*', struct_file='STRUCT.fdf'):
 from ase.calculators.vasp import vasp
 
 
+
