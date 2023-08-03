@@ -9,8 +9,12 @@ sim.read_fdf("BASIS.fdf")
 sim.read_fdf("RUN.fdf")
 sim.read_fdf("KPT.fdf")
 sim.read_fdf("TS.fdf")
+<<<<<<< HEAD
 sim.run("scatter", 12, **option)
 sim.run("scatter", 12, Voltage = "0.0 eV", 
         label_L = "Left.TSHS", 
         label_R = "Right.TSHS", 
         n_left = 32, n_right =  32)
+=======
+sim.run("siesta", 12, **option)
+>>>>>>> 4e78989 (modeling)
