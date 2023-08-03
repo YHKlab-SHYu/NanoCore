@@ -313,6 +313,9 @@ class Siesta(object):
             
 
     def read_fdf(self, filename):
+        if filename == 'STRUCT.fdf':
+            self._atoms = read_struct('STRUCT.fdf')
+            return
         with open(filename, 'r') as fd:
             lines = fd.readlines()
         fname = filename.split('/')[-1]
