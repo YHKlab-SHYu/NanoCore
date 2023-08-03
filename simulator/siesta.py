@@ -561,9 +561,10 @@ class Siesta(object):
 
     def write_struct(self, cellparameter=1.0):
 
-        cell1 = self._atoms.get_cell()[0]
-        cell2 = self._atoms.get_cell()[1]
-        cell3 = self._atoms.get_cell()[2]
+        if self._atoms.get_cell() is not 'None':
+            cell1 = self._atoms.get_cell()[0]
+            cell2 = self._atoms.get_cell()[1]
+            cell3 = self._atoms.get_cell()[2]
 
         #---------------STRUCT.fdf----------------
         fileS = open('STRUCT.fdf', 'w')
@@ -582,10 +583,11 @@ class Siesta(object):
         fileS.write("\n#(3) Lattice, coordinates, k-sampling\n\n")
         fileS.write("LatticeConstant   %15.9f Ang\n" % cellparameter)
         fileS.write("%block LatticeVectors\n")
-        va, vb, vc = cell1, cell2, cell3
-        fileS.write("%15.9f %15.9f %15.9f\n" % tuple(va))
-        fileS.write("%15.9f %15.9f %15.9f\n" % tuple(vb))
-        fileS.write("%15.9f %15.9f %15.9f\n" % tuple(vc))
+        if self._atoms.get_cell() is not 'None':
+            va, vb, vc = cell1, cell2, cell3
+            fileS.write("%15.9f %15.9f %15.9f\n" % tuple(va))
+            fileS.write("%15.9f %15.9f %15.9f\n" % tuple(vb))
+            fileS.write("%15.9f %15.9f %15.9f\n" % tuple(vc))
         fileS.write("%endblock LatticeVectors\n\n")
     
         #Coordinates
