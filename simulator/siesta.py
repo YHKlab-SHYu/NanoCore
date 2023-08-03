@@ -513,7 +513,51 @@ class Siesta(object):
         cmd = f'mpirun -np {nproc}  {exec} < RUN.fdf > stdout.txt'
         result = subprocess.run(cmd, shell=True, check=True)
         return result
-        
+    
+    def model_opt(self, electrode_structure, channel_structure, supercell=(1,1), d_x=(0, 0, 0), d_y=(0, 0, 0), d_z=(0, 0, 0)):
+        # read structures from external files
+        mos2 = io.read_xsf(channel_structure)    # 2d pbc on xz plane
+        slab = io.read_xsf(electrode_structure) # 3d pbc 
+
+        # get cell matching
+        n1, n2 = slab.get_cell_match(mos2, 'y', 'y', max_unit=5)
+
+        # set repeat unit (USER INPUT)
+        m1, m2 = supercell[0], supercell[1]
+
+        # generate supercells
+        slab_2 = slab * (m1, n1, 1)
+        mos2_2 = mos2 * (1, n2, m2)
+
+        # adjust cell size
+        ratio = mos2_2.get_cell()[1][1] / slab_2.get_cell()[1][1]
+        slab_3 = slab_2.adjust_cell_size(ratio, 7)
+        slab_4 = slab_2.adjust_cell_size(ratio, 7)
+
+        for d in np.arange(d_z):
+            os.system('mkdir %.2f'%d)
+            zmax = slab_3.get_zmax()       # location of the surface
+            mos2_2.select_all()
+            mos2_2.translate(0, 0, zmax+d) # move MoS2 on the surface
+            zmax = mos2_2.get_zmax()
+            slab_4.select_all()
+            slab_4.translate(0, 0, zmax+d)
+
+            # add two structures
+            new = slab_3 + mos2_2 + slab_4  # merge two systems with PBC of "slab"
+
+            # set vacuum along z axis
+            zmax = slab_4.get_zmax()
+            new.set_vacuum(zmax-new._cell[2][2]+15, 'z')
+
+            # sort atoms by z coordinates
+            new.select_all()
+            new.sort('z')
+
+
+            # save the interface model
+            io.write_xsf('model.xsf', new)
+            os.system('mv model.xsf %.2f'%d)    
 
     def write_struct(self, cellparameter=1.0):
 

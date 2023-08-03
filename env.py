@@ -20,12 +20,12 @@ vasp_POTCAR_PW91 = vaspini + '2.POTPAW.PBE.54.RECOMMEND'        # connect to cor
 # SIESTA
 #
 
-siesta_dir = '/home2/littleyu/opt/siesta-v4.1-b4'
+siesta_dir = '/home2/jwlee/siesta-v4.1-b4'
 # Siesta calculator location
 siesta_calculator = siesta_dir + '/Obj/siesta'
 
 # Pseudopentiential files location
-siesta_psf_location = ''
+siesta_psf_location = '/home2/jwlee/pseudopotential'
 
 # Pyprojection files location
 import os
